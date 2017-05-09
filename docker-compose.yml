@@ -1,0 +1,28 @@
+version: "3.0"
+
+services:
+  cowrie:
+    restart: always
+    network_mode: host
+    environment:
+      - "COWRIEARGS=--config /opt/cowrie/etc/cowrie.cfg"
+      - "XARGS=-n"
+    build: .
+    ports:
+      - "2222:2222"
+      - "2223:2223"
+    volumes:
+      - "./etc:/opt/cowrie/etc"
+      - "./dl:/opt/cowrie/dl"
+      - "./log:/opt/cowrie/log"
+  splunkuniversalforwarder:
+    restart: always
+    image: splunk/universalforwarder:latest
+    hostname: splunkuniversalforwarder
+    environment:
+      - "SPLUNK_START_ARGS=--accept-license --answer-yes"
+      - "SPLUNK_FORWARD_SERVER=${SPLUNK_FORWARD_SERVER}"
+      - "SPLUNK_USER=root"
+      - "SPLUNK_ADD=monitor /docker/log/cowrie.json -index main -sourcetype cowrie"
+    volumes:
+      - "./log:/docker/log:ro"
