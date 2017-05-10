@@ -9,3 +9,16 @@ You also want to give the Docker container full access to the directories `dl`, 
 Now run the container with `docker-compose up` and see if it works. Run this command with `-d` to run it in the background.
 
 You can connect to the honeypot using `ssh localhost -p 2222 -l root`.
+
+
+## Short install
+```
+git clone https://github.com/HoneyNED/cowrie-docker.git
+cd ./cowrie-docker
+sudo docker-compose build
+vim ./etc/cowrie.cfg
+vim .env
+chmod -R 777 dl etc log
+sudo docker-compose up -d
+tail -f ./log/cowrie.json
+```
